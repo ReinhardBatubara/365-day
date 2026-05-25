@@ -296,6 +296,10 @@
 
     <div class="progress-nav" id="nav-dots"></div>
 
+    <audio id="bgMusic" autoplay loop>
+        <source src="music\YTDown_YouTube_beabadoobee-Glue-Song-Lyrics_Media_mR4wxeZ99Fw_009_128k.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="section" id="sec-1">
         <h1>You & Me ♡</h1>
         <div class="envelope-container" onclick="scrollToNext()">
@@ -333,7 +337,7 @@
     </div>
 
     <div class="section bg-landscape" id="sec-3">
-        <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Our First Date ☁️</h2>
+        <h2 style="color: rgb(255, 80, 80); text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Our First Date ☁️</h2>
         
         <div class="flex-row" style="background: rgba(255,255,255,0.8); padding: 30px; border-radius: 15px; border: 2px dashed #fff;">
             <div class="text-center">
@@ -615,6 +619,24 @@
         function scrollToNext() {
             document.getElementById('sec-2').scrollIntoView({ behavior: 'smooth' });
         }
+
+        const bgMusic = document.getElementById('bgMusic');
+
+        if (bgMusic) {
+            bgMusic.volume = 0.4;
+
+            // coba autoplay
+            bgMusic.play().catch(() => {
+
+                // kalau diblok browser,
+                // putar saat user klik pertama kali
+                document.addEventListener('click', () => {
+                    bgMusic.play();
+                }, { once: true });
+
+            });
+        }
+
     </script>
 </body>
 </html>
