@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Anniversary Scrapbook ♡</title>
+    <style>
+        /* ================= VARIABLES & RESET ================= */
+        :root {
+            --paper-color: #fcfbf8;
+            --red-love: #e63946;
+            --cream: #faedcd;
+            --green-hill: #a7c957;
+            --blue-sky: #a2d2ff;
+            --text-dark: #333333;
+            --tape-color: rgba(244, 162, 97, 0.6);
+            --font-hand: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive;
+            --font-sans: system-ui, -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--paper-color);
+            color: var(--text-dark);
+            font-family: var(--font-hand);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Paper Texture */
+        .paper-bg {
+            background-image: 
+                radial-gradient(#e0e0e0 1px, transparent 1px),
+                radial-gradient(#e0e0e0 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+
+        /* ================= TYPOGRAPHY ================= */
+        h1, h2, h3 { font-weight: normal; color: var(--red-love); margin-bottom: 15px; }
+        h1 { font-size: 3.5rem; text-align: center; }
+        h2 { font-size: 2.5rem; }
+        p { font-size: 1.2rem; line-height: 1.6; }
+
+        .editable-caption {
+            display: inline-block;
+            padding: 5px 10px;
+            border-bottom: 2px dashed #ccc;
+            background: rgba(255,255,255,0.5);
+            min-width: 200px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .editable-caption:focus { border-bottom-color: var(--red-love); background: #fff; }
+
+        /* ================= LAYOUT & SECTIONS ================= */
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .section.visible { opacity: 1; transform: translateY(0); }
+
+        /* ================= DECORATIONS & EFFECTS ================= */
+        .washi-tape {
+            position: absolute;
+            background-color: var(--tape-color);
+            height: 25px;
+            width: 120px;
+            opacity: 0.8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .tape-1 { top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); }
+        .tape-2 { bottom: -10px; right: -20px; transform: rotate(45deg); width: 80px; background-color: rgba(230, 57, 70, 0.4); }
+        
+        .floating-heart {
+            position: fixed;
+            color: var(--red-love);
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatUp 4s ease-in forwards;
+            z-index: 9999;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.2) rotate(45deg); opacity: 0; }
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ================= PHOTO SLOT SYSTEM ================= */
+        .photo-slot {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px;
+            transition: transform 0.3s ease;
+        }
+        .photo-slot:hover { transform: scale(1.02); z-index: 5; }
+        
+        .frame {
+            background: #e0e0e0; /* Warna abu-abu jika gambar belum ada */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 3px 5px 15px rgba(0,0,0,0.1);
+        }
+        .frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ================= SPECIFIC FRAMES ================= */
+        /* 1. Heart Frame */
+        .frame-heart {
+            width: 200px; height: 200px;
+            clip-path: path('M100,190 C-50,90 20,-20 100,40 C180,-20 250,90 100,190');
+        }
+        /* 2. Polaroid */
+        .frame-polaroid {
+            width: 220px; height: 260px;
+            padding: 10px 10px 50px 10px;
+            background: white;
+            border: 1px solid #eee;
+        }
+        /* 3. Phone */
+        .frame-phone {
+            width: 160px; height: 300px;
+            border: 8px solid #222;
+            border-radius: 20px;
+            background: #f0f0f0;
+        }
+        /* 4. Calendar */
+        .frame-calendar {
+            width: 200px; height: 200px;
+            border-top: 30px solid var(--red-love);
+            border-radius: 10px;
+        }
+        /* 5. Album Cover */
+        .frame-album {
+            width: 250px; height: 250px;
+            border-radius: 5px;
+        }
+        /* 6. Photostrip */
+        .photostrip {
+            background: white;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+        .frame-strip { width: 150px; height: 120px; }
+        /* 7. Locket */
+        .frame-locket {
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            border: 5px solid gold;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+        /* 8. Blob / Cutout */
+        .frame-blob {
+            width: 280px; height: 280px;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            border: 8px solid white;
+        }
+        /* 9. Film Vertical */
+        .frame-film {
+            width: 180px; height: 120px;
+            border: 10px solid #111;
+            border-left: 15px dotted #111;
+            border-right: 15px dotted #111;
+            background: #222;
+        }
+        /* 10. Puzzle (Grid layout trick) */
+        .frame-puzzle { width: 150px; height: 150px; border-radius: 10px; margin: 5px; }
+
+        /* ================= SECTION STYLES ================= */
+        /* Envlope */
+        .envelope-container { cursor: pointer; text-align: center; }
+        .envelope {
+            width: 300px; height: 200px;
+            background: #fff0f3;
+            border: 2px dashed #ffc8dd;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            margin: 20px auto;
+            border-radius: 5px;
+        }
+        .envelope::before {
+            content: '♡ you & me ♡';
+            font-size: 1.5rem; color: var(--red-love);
+        }
+
+        /* Backgrounds */
+        .bg-landscape {
+            background: linear-gradient(to bottom, var(--blue-sky) 0%, #e0fbfc 60%, var(--gree-hill) 60%, #90a955 100%);
+        }
+        .bg-lined {
+            background-image: repeating-linear-gradient(transparent, transparent 29px, #ccc 30px);
+            background-attachment: local;
+        }
+
+        /* Vinyl */
+        .vinyl-record {
+            width: 200px; height: 200px;
+            background: #111;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 0 5px #333, inset 0 0 10px rgba(255,255,255,0.2);
+            animation: spin 4s linear infinite;
+        }
+        .vinyl-center { width: 60px; height: 60px; background: var(--red-love); border-radius: 50%; border: 3px solid #fff; }
+
+        /* Checklist */
+        .bucket-list { list-style: none; font-size: 1.5rem; text-align: left; }
+        .bucket-list li { margin: 15px 0; display: flex; align-items: center; gap: 15px; }
+        .bucket-list input[type="checkbox"] { width: 25px; height: 25px; accent-color: var(--red-love); cursor: pointer; }
+
+        /* CD Case */
+        .cd-case {
+            width: 300px; height: 280px;
+            border: 2px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border-left: 30px solid rgba(200,200,200,0.5);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 5px; box-shadow: 5px 5px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Letter */
+        .letter-content { font-size: 1.4rem; max-width: 600px; line-height: 1.8; text-align: justify; padding: 20px; }
+
+        /* Progress indicator */
+        .progress-nav {
+            position: fixed; right: 15px; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 10px; z-index: 100;
+        }
+        .dot { width: 12px; height: 12px; background: #ddd; border-radius: 50%; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--red-love); transform: scale(1.3); }
+
+        /* Buttons */
+        .btn-action {
+            background: var(--cream);
+            border: 2px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        .btn-action:hover { background: var(--red-love); color: white; border-color: var(--red-love); }
+
+        /* Helpers */
+        .flex-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+        .text-center { text-align: center; }
+        .doodle-text { font-size: 1.2rem; color: #666; transform: rotate(-3deg); }
+
+        /* Print Media */
+        @media print {
+            .progress-nav, .floating-heart, button { display: none !important; }
+            .section { opacity: 1 !important; transform: none !important; page-break-after: always; min-height: auto; padding: 20px; }
+            body { background: white; }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            .flex-row { flex-direction: column; align-items: center; }
+            .photostrip { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+            .frame-phone { transform: rotate(90deg); margin: 50px 0; }
+        }
+    </style>
+</head>
+<body class="paper-bg">
+
+    <div class="progress-nav" id="nav-dots"></div>
+
+    <div class="section" id="sec-1">
+        <h1>You & Me ♡</h1>
+        <div class="envelope-container" onclick="scrollToNext()">
+            <div class="envelope">
+                <div class="washi-tape tape-1"></div>
+            </div>
+        </div>
+        <p class="doodle-text">✨ Tap to open our story ✨</p>
+        
+        <div class="photo-slot">
+            <div class="frame frame-heart">
+                <img src="images\IMG_5868.JPG" alt="Memory" style="object-position: 50% 0%;">
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="sec-2">
+        <h2>How It All Began 📱</h2>
+        <p class="doodle-text" style="margin-bottom: 20px;">awal cerita kita ♡</p>
+        
+        <div class="flex-row">
+            <div class="photo-slot" style="transform: rotate(-5deg);">
+                <div class="washi-tape tape-1"></div>
+                <div class="frame frame-polaroid">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.28.25.jpeg" alt="Memory">
+                </div>
+            </div>
+
+            <div class="photo-slot" style="transform: rotate(3deg);">
+                <div class="frame frame-phone">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.42.38.jpeg" alt="Memory">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section bg-landscape" id="sec-3">
+        <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Our First Date ☁️</h2>
+        
+        <div class="flex-row" style="background: rgba(255,255,255,0.8); padding: 30px; border-radius: 15px; border: 2px dashed #fff;">
+            <div class="text-center">
+                <h1 style="color: var(--red-love); font-size: 5rem; margin:0;">05</h1>
+                <h2 style="color: #666; margin:0;">Oct</h2>
+            </div>
+            
+            <div class="photo-slot">
+                <div class="washi-tape tape-1"></div>
+                <div class="frame frame-calendar">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.28.38.jpeg" alt="Memory">
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <div class="editable-caption" contenteditable="true" id="cap-1">
+                Hari yang sederhana, tapi jadi salah satu momen yang paling aku inget. ✏️
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="sec-4">
+        <h2>Our Song 🎵</h2>
+        
+        <div class="flex-row">
+            <div class="photo-slot">
+                <div class="frame frame-album">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.28.48.jpeg" alt="Memory" style="object-position: 90% 20%;">
+                </div>
+            </div>
+
+            <div class="text-center">
+                <div class="vinyl-record" style="margin: 0 auto 20px auto;">
+                    <div class="vinyl-center"></div>
+                </div>
+                <ul style="list-style: none; font-size: 1.3rem; text-align: left; background: var(--cream); padding: 20px; border-radius: 10px; transform: rotate(2deg);">
+                    <li>🎧 wave to earth - bad</li>
+                    <li>🎧 beabadoobee - Glue Song</li>
+                    <li>🎧 wave to earth - love</li>
+                    <li>🎧 Paramore - The Only Exception</li>
+                    <li>🎧 JVKE - her</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section bg-lined" id="sec-5">
+        <h2>Fav Picts of Us!!! 📷</h2>
+        
+        <div class="flex-row" style="align-items: flex-start;">
+            <div class="photo-slot" style="background: #eef; padding: 20px; border-radius: 10px; border: 2px solid #ccc;">
+                <p style="text-align:center; font-weight:bold;">📸</p>
+                <div class="frame frame-album">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.28.30.jpeg" alt="Memory">
+                </div>
+            </div>
+
+            <div class="photostrip">
+                <div class="washi-tape tape-1"></div>
+                <div class="photo-slot" style="margin:0;">
+                    <div class="frame frame-strip"><img src="images\WhatsApp Image 2026-05-25 at 11.29.09.jpeg" alt="Memory" style="object-position: 50% 70%;"></div>
+                </div>
+                <div class="photo-slot" style="margin:0;">
+                    <div class="frame frame-strip"><img src="images\WhatsApp Image 2026-05-25 at 11.28.36.jpeg" alt="Memory"></div>
+                </div>
+                <div class="photo-slot" style="margin:0;">
+                    <div class="frame frame-strip"><img src="images\WhatsApp Image 2026-05-25 at 11.29.00.jpeg" alt="Memory"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="editable-caption" contenteditable="true" id="cap-2" style="margin-top: 30px; max-width: 500px; transform: rotate(-2deg); background: #ffffcc;">
+            "Foto ini paling aku suka. Liatnya bikin adem, kayak momen kecil yang nggak bakal aku lupa." ✏️
+        </div>
+    </div>
+
+    <div class="section" id="sec-6">
+        <h2 style="animation: pulse 2s infinite;">Key to My Heart 🔐</h2>
+        <p class="doodle-text text-center" style="max-width: 400px; margin-bottom: 30px;">
+            "Somehow you got the key to my heart —now I’m just here acting like I lost it on purpose."
+        </p>
+
+        <div class="photo-slot">
+            <div class="frame frame-locket">
+                <img src="images\WhatsApp Image 2026-05-25 at 11.28.37.jpeg" alt="Memory">
+            </div>
+        </div>
+    </div>
+
+    <div class="section bg-landscape" id="sec-7" style="min-height: 60vh;">
+        <h3 style="color: white; text-shadow: 1px 1px 2px #333;">little memories, big feelings ☁️✨</h3>
+        
+        <div class="flex-row">
+            <div class="photo-slot" style="transform: scale(0.8) rotate(-10deg);">
+                <div class="frame frame-polaroid">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.29.18.jpeg" alt="Memory" style="object-position: 50% 20%;">
+                </div>
+            </div>
+            <div class="photo-slot" style="transform: scale(0.8) rotate(5deg); margin-top: 50px;">
+                <div class="frame frame-polaroid">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.29.17 (1).jpeg" alt="Memory">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section bg-lined" id="sec-8">
+        <h2 style="color: #2a9d8f;">OUR MINI BUCKET LISTS! 📝</h2>
+        
+        <div class="flex-row" style="align-items: center;">
+            <ul class="bucket-list">
+                <li><input type="checkbox" id="bl-1"> <label for="bl-1">Pedaling Together</label></li>
+                <li><input type="checkbox" id="bl-2"> <label for="bl-2">Dinner Date</label></li>
+                <li><input type="checkbox" id="bl-3"> <label for="bl-3">Cafe Date</label></li>
+                <li><input type="checkbox" id="bl-4"> <label for="bl-4">Movie Date♡</label></li>
+                <li><input type="checkbox" id="bl-5"> <label for="bl-5">Hot Spring Date</label></li>
+                <li><input type="checkbox" id="bl-6"> <label for="bl-6">Motor Ride Date</label></li>
+                <li><input type="checkbox" id="bl-7"> <label for="bl-7">Beach Date</label></li>
+                <li><input type="checkbox" id="bl-8"> <label for="bl-8">Study Together</label></li>
+                <li><input type="checkbox" id="bl-9"> <label for="bl-9">Karaoke Date</label></li>
+                <li><input type="checkbox" id="bl-10"> <label for="bl-10">Travel The World Together</label></li>
+            </ul>
+
+            <div class="photo-slot" style="background: #fff3b0; padding: 15px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); transform: rotate(4deg);">
+                <div class="washi-tape tape-1"></div>
+                <div class="frame frame-album" style="width: 150px; height: 150px;">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.28.40.jpeg" alt="Memory">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="sec-9">
+        <h2>Favorite Person 💘</h2>
+        <div class="photo-slot">
+            <div class="frame frame-blob">
+                <img src="images\WhatsApp Image 2026-05-25 at 13.33.51.jpeg" alt="Memory" style="object-position: 50% 0%;">
+            </div>
+            <div class="washi-tape tape-2"></div>
+        </div>
+        <p class="doodle-text" style="font-size: 2rem; color: var(--red-love); margin-top: -20px; z-index: 10;">my favorite person ♡</p>
+    </div>
+
+    <div class="section bg-landscape" id="sec-10">
+        <h2 style="color: white; text-shadow: 1px 1px 3px #000;">a memory I want to replay forever 💿</h2>
+        <div class="cd-case">
+            <div class="photo-slot" style="margin: 0;">
+                <div class="frame frame-album" style="width: 240px; height: 240px; border-radius: 50%;">
+                    <img src="images\WhatsApp Image 2026-05-25 at 11.28.37 (1).jpeg" alt="Memory" style="object-position: 30% 20%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section bg-lined" id="sec-11">
+        <h2>A Letter For You 💌</h2>
+        
+        <div class="flex-row" style="align-items: center;">
+            <div style="display:flex; flex-direction:column; background:#111; padding: 10px; border-radius: 5px;">
+                <div class="photo-slot" style="margin: 5px;">
+                    <div class="frame frame-film"><img src="images\WhatsApp Image 2026-05-25 at 11.29.00.jpeg" alt="Memory"></div>
+                </div>
+                <div class="photo-slot" style="margin: 5px;">
+                    <div class="frame frame-film"><img src="images\WhatsApp Image 2026-05-25 at 11.29.10.jpeg" alt="Memory"></div>
+                </div>
+            </div>
+
+            <div class="letter-content editable-caption" contenteditable="true" id="cap-3">
+                One year. 365 days of growing, learning, laughing, overthinking, memaafkan, dan mencintai. Rasanya nggak selalu mulus, tapi somehow… kita selalu nemu cara buat balik lagi ke titik yang sama: kita.<br><br>
+                Aku nggak tahu apa yang akan terjadi nanti—tapi yang aku tahu, selama setahun ini kamu jadi rumah paling nyaman yang pernah aku temuin.<br><br>
+                Thank you for staying, for showing up, and for making me feel seen. This is year one, and I hope it's just the beginning.<br><br>
+                With all my weird thoughts and full heart, ✏️
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="sec-12">
+        <h2>365 Days with YOU ✨</h2>
+        <div class="flex-row" style="gap: 10px; max-width: 400px;">
+            <div class="photo-slot" style="margin:0;"><div class="frame frame-puzzle"><img src="images\WhatsApp Image 2026-05-25 at 11.29.08.jpeg" alt="Memory"></div></div>
+            <div class="photo-slot" style="margin:0; margin-top:20px;"><div class="frame frame-puzzle"><img src="images\WhatsApp Image 2026-05-25 at 11.28.55.jpeg" alt="Memory"></div></div>
+            <div class="photo-slot" style="margin:0; margin-top:-20px;"><div class="frame frame-puzzle"><img src="images\WhatsApp Image 2026-05-25 at 11.28.48 (1).jpeg" alt="Memory"></div></div>
+            <div class="photo-slot" style="margin:0;"><div class="frame frame-puzzle"><img src="images\WhatsApp Image 2026-05-25 at 11.29.18 (2).jpeg" alt="Memory"></div></div>
+        </div>
+    </div>
+
+    <div class="section" id="sec-13">
+        <h2 style="font-size: 3rem;">Happy Anniversary Love ❤️</h2>
+        <p class="doodle-text" style="margin-bottom: 20px;">TWENTIETH OF JULY, TWENTY TWENTY FIVE</p>
+        <p class="doodle-text" style="font-size: 2rem;">20. 7. 2025</p>
+        
+        <div class="photo-slot">
+            <div class="frame frame-polaroid" style="border: 5px solid #ffc8dd; border-bottom: 40px solid #ffc8dd;">
+                <img src="images\WhatsApp Image 2026-05-25 at 11.28.36.jpeg" alt="Memory" style="object-position: 10% 50%;">
+            </div>
+        </div>
+
+        <h3 style="font-size: 2.5rem; margin-top: 20px;">i love you so muchh</h3>
+        
+        <div style="margin-top: 40px; display: flex; gap: 20px;">
+            <button class="btn-action" onclick="window.scrollTo(0,0)">🔄 Replay Our Story</button>
+            <button class="btn-action" onclick="window.print()">🖨️ Download / Save PDF</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Editable Captions (Save to LocalStorage) ---
+            const captions = document.querySelectorAll('.editable-caption');
+            captions.forEach(cap => {
+                const id = cap.id;
+                const savedText = localStorage.getItem(`scrapbook_txt_${id}`);
+                if (savedText) { cap.innerHTML = savedText; }
+                
+                cap.addEventListener('blur', () => {
+                    localStorage.setItem(`scrapbook_txt_${id}`, cap.innerHTML);
+                });
+            });
+
+            // --- 2. Bucket List Checkboxes (Save to LocalStorage) ---
+            const checkboxes = document.querySelectorAll('.bucket-list input[type="checkbox"]');
+            checkboxes.forEach(chk => {
+                const id = chk.id;
+                const savedState = localStorage.getItem(`scrapbook_chk_${id}`);
+                if (savedState === 'true') { chk.checked = true; }
+                
+                chk.addEventListener('change', () => {
+                    localStorage.setItem(`scrapbook_chk_${id}`, chk.checked);
+                });
+            });
+
+            // --- 3. Scroll Animations (Fade In) & Navigation Dots ---
+            const sections = document.querySelectorAll('.section');
+            const navContainer = document.getElementById('nav-dots');
+            
+            // Create dots
+            sections.forEach((sec, idx) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                dot.addEventListener('click', () => {
+                    sec.scrollIntoView({ behavior: 'smooth' });
+                });
+                navContainer.appendChild(dot);
+            });
+            const dots = document.querySelectorAll('.dot');
+
+            const observerOptions = { root: null, threshold: 0.3 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Update active dot
+                        const index = Array.from(sections).indexOf(entry.target);
+                        dots.forEach(d => d.classList.remove('active'));
+                        if(dots[index]) dots[index].classList.add('active');
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(sec => observer.observe(sec));
+
+            // --- 4. Floating Hearts Animation ---
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.classList.add('floating-heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                document.body.appendChild(heart);
+                
+                // Remove heart after animation completes
+                setTimeout(() => { heart.remove(); }, 6000);
+            }, 800); // create heart every 800ms
+        });
+
+        function scrollToNext() {
+            document.getElementById('sec-2').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
