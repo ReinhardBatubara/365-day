@@ -290,9 +290,52 @@
             .photostrip { flex-direction: row; flex-wrap: wrap; justify-content: center; }
             .frame-phone { transform: rotate(90deg); margin: 50px 0; }
         }
+
+        /* ================= LOVE RAIN EFFECT ================= */
+.love-rain {
+    position: fixed;
+    top: -40px;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 9998;
+}
+
+.love-drop {
+    position: fixed;
+    top: -40px;
+    color: var(--red-love);
+    font-size: 18px;
+    opacity: 0.85;
+    pointer-events: none;
+    animation-name: loveRainFall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    text-shadow: 0 2px 6px rgba(230, 57, 70, 0.25);
+}
+
+@keyframes loveRainFall {
+    0% {
+        transform: translateY(-40px) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translateY(110vh) rotate(180deg) scale(1.2);
+        opacity: 0;
+    }
+}
     </style>
 </head>
 <body class="paper-bg">
+
+    <div class="love-rain" id="loveRain"></div>
 
     <div class="progress-nav" id="nav-dots"></div>
 
@@ -601,19 +644,31 @@
 
             sections.forEach(sec => observer.observe(sec));
 
-            // --- 4. Floating Hearts Animation ---
-            setInterval(() => {
+            // --- 4. Love Rain Animation ---
+            const loveRain = document.getElementById('loveRain');
+
+            function createLoveRain() {
+                if (!loveRain) return;
+
                 const heart = document.createElement('div');
-                heart.innerHTML = '❤️';
-                heart.classList.add('floating-heart');
+                heart.classList.add('love-drop');
+
+                const hearts = ['❤️', '💕', '💗', '💖', '♡'];
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+
                 heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
-                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                document.body.appendChild(heart);
-                
-                // Remove heart after animation completes
-                setTimeout(() => { heart.remove(); }, 6000);
-            }, 800); // create heart every 800ms
+                heart.style.fontSize = (Math.random() * 16 + 12) + 'px';
+                heart.style.animationDuration = (Math.random() * 4 + 5) + 's';
+                heart.style.opacity = Math.random() * 0.5 + 0.4;
+
+                loveRain.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 9000);
+            }
+
+            setInterval(createLoveRain, 450);
         });
 
         function scrollToNext() {
